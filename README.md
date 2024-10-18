@@ -1,51 +1,44 @@
-# React + TypeScript + Vite
+# Salary Discounts Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Greetings, ATDEV Recruitment Department. In this Repository you'll find the Salary Discounts Calculator technical test. I'll be explaining in a video in the mail how it works and how it was developed. However here you can also find a quick summary of how it works.
 
-Currently, two official plugins are available:
+Thank you for taking me into consideration and I hope to hear back from y'all!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Expected Inputs.
 
-## Expanding the ESLint configuration
+### All Values are meant to be given in Dominican Peso (DOP). Positive Integer Inputs.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Gross Monthly Salary**: The Salary Discounts Calculator does both the Pre-Taxes (AFP and SFS) and Taxes (ISR) Discounts for you. So there's no need to calculate the Pre-Taxes discounts to get the Taxes Discounts.
 
-- Configure the top-level `parserOptions` property like this:
+- **Overtime Hours**: Overtime Hours are special in that they don't get Pre-Taxes discounts. They only go through the ISR.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Bonifications**: Just like Overtime Hours, no Pre-Taxes Discounts, only ISR.
+
+## Outputs.
+
+### Pre-Tax Discounts.
+- **AFP**:  AFP (Administradora de Fondos de Pensiones) is a Law Benefit every Dominican Worker has a right to. It consists of a 2.87% monthly discount from **only** the **Gross Monthly Salary** which goes towards a Retirement Fund.
+```typescript
+const afp : number = gross * 0.0287;
+```
+- **SFS**: SFS (Seguro Familiar de Salud) is another Law Benefit, which is basically a Health Insurance. It consists of a 3.04% Monthly Discount.
+```typescript
+const sfs : number = gross * 0.0304;
+```
+- **Net Monthly Salary**: This is your salary *after* the Law Benefits are discounted from the Gross Monthly Salary which is also the one requested by the DGII (Direccion General de Impuestos Internos) for the purpose of taxations based on income (ISR).
+```typescript
+const netPreSalary : number = gross + OT + bonus - afp - sfs;
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Tax Discounts.
+- **ISR Retentions**: ISR (Impuesto Sobre la Renta) is basically an Income Tax. This represents how much of your income is going to be retained by the government. To see how is the ISR paid based on your yearly income you can [Click Here](https://dgii.gov.do/publicacionesOficiales/bibliotecaVirtual/contribuyentes/isr/ISR%20Persona%20Fsica/3-Revista%20Impuesto%20Sobre%20la%20Renta%20(ISR)%20Universitarios.pdf). 
+- **Monthly Salary after Taxes**: This is your Salary after the Pre-Tax and Tax Discounts.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### Extras.
+#### For any additional details that are not expected to show on *every* paycheck.
+- **Vacations Payment**: This is the amount you'd get paid for the 14 vacation days. It consist of your Gross Monthly Salary divided by 23.83 (Converts to Daily Salary) and multiplied by 14
+```typescript
+const vacationsPayment : number = (gross / 23.83) * 14;
 ```
-# net-salary
+- **Monthly Salary + Vacations**: This shows your Net Monthly Salary and Vacations Payment added together and after applying the ISR to the sum.
+- **Monthly Salary + 13th Salary**: The 13th Salary is another Law Benefit. The employer is required to pay the sum of all the employee's monthly earnings divided by 12 by the end of a fiscal year. Since this calculator only takes **one** paycheck, the Overtime Hours and Bonifications are not counted for the 13th Salary calculation (However in a Real Life Scenario they are in fact taken into consideration). But for this example it adds your Gross Monthly Salary to your Net Monthly Salary and displays it on the screen.
