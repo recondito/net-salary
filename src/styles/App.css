@@ -1,0 +1,16 @@
+.calculatorContainer {
+    border-style: solid;
+    width: 640px; /* Can be in percentage also. */
+    height: auto;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    padding-bottom:1%;
+    position: relative;
+    text-align: center;
+    
+}
+
+.calculatorForm {
+    margin: auto;
+    
+}
